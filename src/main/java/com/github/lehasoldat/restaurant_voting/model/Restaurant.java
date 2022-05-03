@@ -1,18 +1,17 @@
 package com.github.lehasoldat.restaurant_voting.model;
 
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
 
-@Data
-@ToString(exclude = {"menus"})
 @Entity(name = "restaurants")
-public class Restaurant {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+@Getter
+@Setter
+@ToString(callSuper = true, exclude = {"menus"})
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Restaurant extends BaseEntity {
+    @Column(unique = true)
     private String name;
     @OneToMany(mappedBy = "restaurant")
     private Set<Menu> menus;

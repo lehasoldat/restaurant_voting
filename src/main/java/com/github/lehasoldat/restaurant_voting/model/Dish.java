@@ -8,5 +8,5 @@ import javax.persistence.*;
 @Data
 public class Dish {
     String name;
-    double price;
+    long price;
 }

@@ -1,17 +1,18 @@
 package com.github.lehasoldat.restaurant_voting.model;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
 
-@Data
 @Entity(name = "users")
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+@Getter
+@Setter
+@ToString(callSuper = true)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class User extends BaseEntity {
     private String name;
+    @Column(unique = true)
     private String email;
     private String password;
     @Enumerated(EnumType.STRING)
@@ -20,6 +21,5 @@ public class User {
             uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "role"}))
     @Column(name = "role")
     @ElementCollection(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "user_id")
     private Set<Role> roles;
 }

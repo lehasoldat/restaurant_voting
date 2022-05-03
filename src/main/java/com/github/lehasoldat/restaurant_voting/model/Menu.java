@@ -1,24 +1,27 @@
 package com.github.lehasoldat.restaurant_voting.model;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Set;
 
-@Data
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"menu_date", "restaurant_id"}))
 @Entity(name = "menus")
-public class Menu {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
-    @Column(name = "date")
-    LocalDate localDate;
+@Getter
+@Setter
+@ToString(callSuper = true)
+@NoArgsConstructor
+
+public class Menu extends BaseEntity {
+    @Column(name = "menu_date")
+    LocalDate menuDate;
     @ManyToOne
+    @JoinColumn(name = "restaurant_id")
     Restaurant restaurant;
-    int votes;
     @CollectionTable(name = "menu_dishes",
-            joinColumns = @JoinColumn(name = "menu_id"))
+            joinColumns = @JoinColumn(name = "menu_id"),
+            uniqueConstraints = @UniqueConstraint(columnNames = {"menu_id", "name"}))
     @ElementCollection(fetch = FetchType.EAGER)
     Set<Dish> dishes;
 }
