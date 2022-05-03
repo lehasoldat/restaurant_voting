@@ -19,6 +19,6 @@ public class Menu {
     int votes;
     @CollectionTable(name = "menu_dishes",
             joinColumns = @JoinColumn(name = "menu_id"))
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     Set<Dish> dishes;
 }
