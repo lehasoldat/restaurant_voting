@@ -1,5 +1,6 @@
 package com.github.lehasoldat.restaurant_voting.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -18,6 +19,7 @@ public class Menu extends BaseEntity {
     LocalDate menuDate;
     @ManyToOne
     @JoinColumn(name = "restaurant_id")
+    @JsonIgnore
     Restaurant restaurant;
     @CollectionTable(name = "menu_dishes",
             joinColumns = @JoinColumn(name = "menu_id"),

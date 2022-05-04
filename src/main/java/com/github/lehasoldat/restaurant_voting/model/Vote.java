@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @Setter
 @ToString(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Vote extends BaseEntity{
     @Column(name = "voting_date")
     private LocalDate votingDate;
