@@ -1,6 +1,8 @@
 package com.github.lehasoldat.restaurant_voting.model;
 
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -20,5 +22,6 @@ public class Vote extends BaseEntity{
     private User user;
     @ManyToOne
     @JoinColumn(name = "restaurant_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Restaurant restaurant;
 }

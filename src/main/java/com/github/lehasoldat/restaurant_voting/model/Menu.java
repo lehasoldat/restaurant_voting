@@ -2,6 +2,8 @@ package com.github.lehasoldat.restaurant_voting.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -25,5 +27,7 @@ public class Menu extends BaseEntity {
             joinColumns = @JoinColumn(name = "menu_id"),
             uniqueConstraints = @UniqueConstraint(columnNames = {"menu_id", "name"}))
     @ElementCollection(fetch = FetchType.EAGER)
+    @JoinColumn(name = "menu_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     Set<Dish> dishes;
 }

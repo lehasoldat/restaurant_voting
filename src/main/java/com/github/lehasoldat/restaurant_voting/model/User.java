@@ -1,6 +1,8 @@
 package com.github.lehasoldat.restaurant_voting.model;
 
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -21,5 +23,7 @@ public class User extends BaseEntity {
             uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "role"}))
     @Column(name = "role")
     @ElementCollection(fetch = FetchType.EAGER)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "user_id")
     private Set<Role> roles;
 }

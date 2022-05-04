@@ -2,6 +2,8 @@ package com.github.lehasoldat.restaurant_voting.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -16,5 +18,6 @@ public class Restaurant extends BaseEntity {
     private String name;
     @OneToMany(mappedBy = "restaurant")
     @JsonIgnore
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Menu> menus;
 }
