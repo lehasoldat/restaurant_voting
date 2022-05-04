@@ -33,15 +33,15 @@ public class UserVotingController {
         return menus.stream().map(Menu::getRestaurant).toList();
     }
 
-    @GetMapping("/restaurants/{restaurantId}")
+    @GetMapping("/restaurants/{restaurantId}/menus")
     public ResponseEntity<Menu> getRestaurantMenuToday(@PathVariable int restaurantId) {
         return ResponseEntity.of(menuRepository.findByRestaurant_IdAndMenuDate(restaurantId, LocalDate.now()));
     }
 
-    @PostMapping("/restaurants/{restaurantId}")
+    @PostMapping("/restaurants/{restaurantId}/votes")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void voteForRestaurant(@PathVariable int restaurantId, @AuthenticationPrincipal AuthUser authUser) {
-        if (LocalTime.now().isAfter(LocalTime.of(23, 0))) {
+        if (LocalTime.now().isAfter(LocalTime.of(11, 0))) {
             throw new AppException(HttpStatus.METHOD_NOT_ALLOWED, "You can not vote after 11:00");
         }
         int userId = authUser.getUser().getId();
