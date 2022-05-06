@@ -7,6 +7,7 @@ import com.github.lehasoldat.restaurant_voting.repository.MenuRepository;
 import com.github.lehasoldat.restaurant_voting.repository.RestaurantRepository;
 import com.github.lehasoldat.restaurant_voting.repository.VoteRepository;
 import com.github.lehasoldat.restaurant_voting.util.DateTimeUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = UserVotingController.API_URL, produces = MediaType.APPLICATION_JSON_VALUE)
+@Slf4j
 public class UserVotingController {
 
     public static final String API_URL = "/api";
@@ -36,17 +38,20 @@ public class UserVotingController {
 
     @GetMapping("/restaurants")
     public List<Restaurant> getRestaurantsWithMenuToday() {
+        log.info("getRestaurantsWithMenuToday");
         List<Menu> menus = menuRepository.findAllByMenuDate(LocalDate.now());
         return menus.stream().map(Menu::getRestaurant).toList();
     }
 
     @GetMapping("/restaurants/{restaurantId}/menus")
     public ResponseEntity<Menu> getRestaurantMenuToday(@PathVariable int restaurantId) {
+        log.info("getRestaurantMenuToday with restaurantId = {}", restaurantId);
         return ResponseEntity.of(menuRepository.findByRestaurant_IdAndMenuDate(restaurantId, LocalDate.now()));
     }
 
     @PostMapping("/restaurants/{restaurantId}/vote")
     public Map<String, String> voteForRestaurant(@PathVariable int restaurantId, @AuthenticationPrincipal AuthUser authUser) {
+        log.info("voteForRestaurant with restaurantId = {}", restaurantId);
         int userId = authUser.getUser().getId();
         restaurantRepository.checkPresent(restaurantId);
         Optional<Vote> vote = voteRepository.findByVotingDateAndUser_Id(LocalDate.now(), userId);
@@ -62,6 +67,7 @@ public class UserVotingController {
 
     @GetMapping("/votes")
     public Map<Restaurant, Integer> getAllVotesToday() {
+        log.info("getAllVotesToday");
         List<Vote> votes = voteRepository.findAllByVotingDate(LocalDate.now());
         return votes.stream().collect(Collectors.toMap(Vote::getRestaurant, vote -> 1, Integer::sum));
     }

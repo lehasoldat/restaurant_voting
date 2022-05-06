@@ -1,6 +1,7 @@
 package com.github.lehasoldat.restaurant_voting.web;
 
 import com.github.lehasoldat.restaurant_voting.error.AppException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 import static org.springframework.boot.web.error.ErrorAttributeOptions.Include.MESSAGE;
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Autowired
@@ -28,25 +30,29 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(AppException.class)
     public ResponseEntity<Object> handleAppException(WebRequest request, AppException exception) {
+        log.error("AppException: {}", exception.getReason());
         return createResponseEntity(request, ErrorAttributeOptions.of(MESSAGE), exception.getReason(), exception.getStatus());
     }
 
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<Object> handleDataAccessException(WebRequest request, DataAccessException exception) {
+        log.error("DataAccessException: {}", exception.getMessage());
         return createResponseEntity(request, ErrorAttributeOptions.of(MESSAGE), exception.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        String msg = ex.getFieldErrors().stream()
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        log.error("MethodArgumentNotValid: {}", exception.getMessage());
+        String msg = exception.getFieldErrors().stream()
                 .map(fieldError -> String.format("[%s] %s", fieldError.getField(), fieldError.getDefaultMessage()))
                 .collect(Collectors.joining("\n"));
         return createResponseEntity(request, ErrorAttributeOptions.of(MESSAGE), msg, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<Object> handleConstraintViolationException(WebRequest webRequest, ConstraintViolationException ex) {
-        String msg = ex.getConstraintViolations().stream()
+    public ResponseEntity<Object> handleConstraintViolationException(WebRequest webRequest, ConstraintViolationException exception) {
+        log.error("ConstraintViolationException: {}", exception.getMessage());
+        String msg = exception.getConstraintViolations().stream()
                 .map(constraintViolation -> String.format("[%s] %s", constraintViolation.getPropertyPath(), constraintViolation.getMessage()))
                 .collect(Collectors.joining("\n"));
         return createResponseEntity(webRequest, ErrorAttributeOptions.of(MESSAGE), msg, HttpStatus.UNPROCESSABLE_ENTITY);

@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:restaurant_voting
+    username: admin
+    password: admin
+  jpa:
+    defer-datasource-initialization: true
+    show-sql: true
+    open-in-view: false
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 20
+        jdbc.batch_size: 20
+logging:
+  level:
+    root: WARN
+    com.github.lehasoldat.restaurant_voting: DEBUG
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
