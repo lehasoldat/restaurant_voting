@@ -105,6 +105,28 @@ class AdminMenuControllerTest extends AbstractControllerTest {
 
     @Test
     @WithUserDetails(ADMIN_MAIL)
+    void updateWithInvalidDish() throws Exception {
+        Menu menuRest1TodayUpdated = getMenuRest1TodayUpdated();
+        menuRest1TodayUpdated.setDishes(Set.of(DISH_NEW, DISH_INVALID));
+        perform(MockMvcRequestBuilders.put(API_URL + "{menuId}", REST1_ID, MENU_REST_1_TODAY_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(menuRest1TodayUpdated)))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    @WithUserDetails(ADMIN_MAIL)
+    void updateWithInvalidDate() throws Exception {
+        Menu menuRest1TodayUpdated = getMenuRest1TodayUpdated();
+        menuRest1TodayUpdated.setMenuDate(null);
+        perform(MockMvcRequestBuilders.put(API_URL + "{menuId}", REST1_ID, MENU_REST_1_TODAY_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(menuRest1TodayUpdated)))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    @WithUserDetails(ADMIN_MAIL)
     void create() throws Exception {
         Menu menuRest2TodayNew = getMenuRest2TodayNew();
         ResultActions actions = perform(MockMvcRequestBuilders.post(API_URL, REST2_ID)
@@ -123,7 +145,29 @@ class AdminMenuControllerTest extends AbstractControllerTest {
     @WithUserDetails(ADMIN_MAIL)
     void createWithWrongRestaurantId() throws Exception {
         Menu menuRest2TodayNew = getMenuRest2TodayNew();
-        ResultActions actions = perform(MockMvcRequestBuilders.post(API_URL, NOT_FOUND_ID)
+        perform(MockMvcRequestBuilders.post(API_URL, NOT_FOUND_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(menuRest2TodayNew)))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    @WithUserDetails(ADMIN_MAIL)
+    void createWithInvalidDish() throws Exception {
+        Menu menuRest2TodayNew = getMenuRest2TodayNew();
+        menuRest2TodayNew.setDishes(Set.of(DISH_NEW, DISH_INVALID));
+        perform(MockMvcRequestBuilders.post(API_URL, REST2_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(menuRest2TodayNew)))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    @WithUserDetails(ADMIN_MAIL)
+    void createWithInvalidDate() throws Exception {
+        Menu menuRest2TodayNew = getMenuRest2TodayNew();
+        menuRest2TodayNew.setDishes(Set.of(DISH_NEW, DISH_INVALID));
+        perform(MockMvcRequestBuilders.post(API_URL, REST2_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(menuRest2TodayNew)))
                 .andExpect(status().isUnprocessableEntity());

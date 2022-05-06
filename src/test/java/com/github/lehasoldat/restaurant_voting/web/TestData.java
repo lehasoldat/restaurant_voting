@@ -33,6 +33,7 @@ public class TestData {
     public static final Dish DISH_1_REST_1_TODAY = new Dish("dish1_rest1_today", 150L);
     public static final Dish DISH_2_REST_1_TODAY = new Dish("dish2_rest1_today", 75L);
     public static final Dish DISH_NEW = new Dish("new_dish", 100L);
+    public static final Dish DISH_INVALID = new Dish("", -1L);
     // menus
     public static final Menu MENU_REST_1_YESTERDAY = new Menu(MENU_REST_1_YESTERDAY_ID, LocalDate.now().minusDays(1), Set.of(DISH_1_REST_1_YESTERDAY, DISH_2_REST_1_YESTERDAY));
     public static final Menu MENU_REST_2_YESTERDAY = new Menu(MENU_REST_2_YESTERDAY_ID, LocalDate.now().minusDays(1), Set.of(DISH_1_REST_2_YESTERDAY, DISH_2_REST_2_YESTERDAY));

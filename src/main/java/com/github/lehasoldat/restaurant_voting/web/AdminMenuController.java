@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import javax.validation.Valid;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
@@ -49,7 +50,7 @@ public class AdminMenuController {
 
     @PutMapping(value = "/{menuId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@PathVariable int restaurantId, @PathVariable int menuId, @RequestBody Menu menu) {
+    public void update(@PathVariable int restaurantId, @PathVariable int menuId, @RequestBody @Valid Menu menu) {
         assureIdConsistent(menu, menuId);
         Restaurant restaurant = menuRepository.checkBelong(menuId, restaurantId).getRestaurant();
         menu.setRestaurant(restaurant);
@@ -57,7 +58,7 @@ public class AdminMenuController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Menu> createWithLocation(@PathVariable int restaurantId, @RequestBody Menu menu) {
+    public ResponseEntity<Menu> createWithLocation(@PathVariable int restaurantId, @RequestBody @Valid Menu menu) {
         checkNew(menu);
         Restaurant restaurant = restaurantRepository.checkPresent(restaurantId);
         menu.setRestaurant(restaurant);

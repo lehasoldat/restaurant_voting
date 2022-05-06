@@ -97,6 +97,17 @@ class AdminRestaurantControllerTest extends AbstractControllerTest {
 
     @Test
     @WithUserDetails(ADMIN_MAIL)
+    void updateWithInvalidName() throws Exception {
+        Restaurant rest1Updated = getRest1Updated();
+        rest1Updated.setName("");
+        perform(MockMvcRequestBuilders.put(API_URL + REST1_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(rest1Updated)))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    @WithUserDetails(ADMIN_MAIL)
     void create() throws Exception {
         Restaurant rest3New = getNew();
         ResultActions actions = perform(MockMvcRequestBuilders.post(API_URL)
@@ -116,6 +127,17 @@ class AdminRestaurantControllerTest extends AbstractControllerTest {
     void createNotNew() throws Exception {
         Restaurant rest3New = getNew();
         rest3New.setId(2);
+        perform(MockMvcRequestBuilders.post(API_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(rest3New)))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    @WithUserDetails(ADMIN_MAIL)
+    void createWithInvalidName() throws Exception {
+        Restaurant rest3New = getNew();
+        rest3New.setName("");
         perform(MockMvcRequestBuilders.post(API_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(rest3New)))

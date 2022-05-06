@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -42,13 +43,13 @@ public class AdminRestaurantController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@PathVariable int id, @RequestBody Restaurant restaurant) {
+    public void update(@PathVariable int id, @RequestBody @Valid Restaurant restaurant) {
         assureIdConsistent(restaurant, id);
         restaurantRepository.save(restaurant);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Restaurant> createWithLocation(@RequestBody Restaurant restaurant) {
+    public ResponseEntity<Restaurant> createWithLocation(@RequestBody @Valid Restaurant restaurant) {
         checkNew(restaurant);
         Restaurant created = restaurantRepository.save(restaurant);
         URI uri = ServletUriComponentsBuilder.fromCurrentContextPath()

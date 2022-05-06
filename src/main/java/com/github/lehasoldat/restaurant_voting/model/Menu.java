@@ -4,8 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -15,14 +16,18 @@ import java.util.Set;
 @Setter
 @ToString(callSuper = true)
 @NoArgsConstructor
-
 public class Menu extends BaseEntity {
-    @Column(name = "menu_date")
+
+    @Column(name = "menu_date", nullable = false)
+    @NotNull
     LocalDate menuDate;
+
     @ManyToOne
-    @JoinColumn(name = "restaurant_id")
+    @JoinColumn(name = "restaurant_id", nullable = false)
     @JsonIgnore
     Restaurant restaurant;
+
+    @Valid
     @CollectionTable(name = "menu_dishes",
             joinColumns = @JoinColumn(name = "menu_id"),
             uniqueConstraints = @UniqueConstraint(columnNames = {"menu_id", "name"}))

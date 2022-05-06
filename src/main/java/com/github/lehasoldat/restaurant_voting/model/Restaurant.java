@@ -6,6 +6,8 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.Set;
 
 @Entity(name = "restaurants")
@@ -14,8 +16,12 @@ import java.util.Set;
 @ToString(exclude = {"menus"})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Restaurant extends BaseEntity {
-    @Column(unique = true)
+
+    @Column(name = "name", unique = true, nullable = false)
+    @NotBlank
+    @Size(max = 128)
     private String name;
+
     @OneToMany(mappedBy = "restaurant")
     @JsonIgnore
     @OnDelete(action = OnDeleteAction.CASCADE)
