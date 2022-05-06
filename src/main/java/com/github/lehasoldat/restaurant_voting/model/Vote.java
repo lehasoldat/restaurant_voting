@@ -6,6 +6,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"voting_date", "user_id"}))
 @Entity(name = "votes")
@@ -13,10 +14,11 @@ import java.time.LocalDate;
 @Setter
 @ToString(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-public class Vote extends BaseEntity{
+public class Vote extends BaseEntity {
     @Column(name = "voting_date")
     private LocalDate votingDate;
+    @Column(name = "voting_time", columnDefinition = "TIME CHECK(voting_time < '11:00')")
+    private LocalTime votingTime;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

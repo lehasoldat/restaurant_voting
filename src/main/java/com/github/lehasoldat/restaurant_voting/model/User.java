@@ -26,4 +26,12 @@ public class User extends BaseEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id")
     private Set<Role> roles;
+
+    public User(Integer id, String name, String email, String password, Set<Role> roles) {
+        super(id);
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.roles = roles;
+    }
 }

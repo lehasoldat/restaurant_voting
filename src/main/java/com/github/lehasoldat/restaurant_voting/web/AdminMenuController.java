@@ -5,6 +5,7 @@ import com.github.lehasoldat.restaurant_voting.model.Restaurant;
 import com.github.lehasoldat.restaurant_voting.repository.MenuRepository;
 import com.github.lehasoldat.restaurant_voting.repository.RestaurantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +36,7 @@ public class AdminMenuController {
     }
 
     @GetMapping("/by-date")
-    ResponseEntity<Menu> findMenuByDate(@PathVariable int restaurantId, @RequestParam LocalDate menuDate) {
+    ResponseEntity<Menu> findMenuByDate(@PathVariable int restaurantId, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate menuDate) {
         return ResponseEntity.of(menuRepository.findByRestaurant_IdAndMenuDate(restaurantId, menuDate));
     }
 

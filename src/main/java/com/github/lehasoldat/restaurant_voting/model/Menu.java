@@ -30,4 +30,10 @@ public class Menu extends BaseEntity {
     @JoinColumn(name = "menu_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     Set<Dish> dishes;
+
+    public Menu(Integer id, LocalDate menuDate, Set<Dish> dishes) {
+        super(id);
+        this.menuDate = menuDate;
+        this.dishes = dishes;
+    }
 }

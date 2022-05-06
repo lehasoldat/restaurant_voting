@@ -1,31 +1,38 @@
 package com.github.lehasoldat.restaurant_voting.web;
 
-import com.github.lehasoldat.restaurant_voting.error.AppException;
 import com.github.lehasoldat.restaurant_voting.model.Menu;
 import com.github.lehasoldat.restaurant_voting.model.Restaurant;
 import com.github.lehasoldat.restaurant_voting.model.Vote;
 import com.github.lehasoldat.restaurant_voting.repository.MenuRepository;
+import com.github.lehasoldat.restaurant_voting.repository.RestaurantRepository;
 import com.github.lehasoldat.restaurant_voting.repository.VoteRepository;
+import com.github.lehasoldat.restaurant_voting.util.DateTimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping(value = UserVotingController.API_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserVotingController {
+
+    public static final String API_URL = "/api";
+    public static final Map<String, String> SUCCESS_UPDATED = Map.of("votingResult", "Vote updated");
+    public static final Map<String, String> SUCCESS_SAVED = Map.of("votingResult", "Vote saved");
 
     @Autowired
     private VoteRepository voteRepository;
 
     @Autowired
     private MenuRepository menuRepository;
+
+    @Autowired
+    private RestaurantRepository restaurantRepository;
 
     @GetMapping("/restaurants")
     public List<Restaurant> getRestaurantsWithMenuToday() {
@@ -38,18 +45,18 @@ public class UserVotingController {
         return ResponseEntity.of(menuRepository.findByRestaurant_IdAndMenuDate(restaurantId, LocalDate.now()));
     }
 
-    @PostMapping("/restaurants/{restaurantId}/votes")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void voteForRestaurant(@PathVariable int restaurantId, @AuthenticationPrincipal AuthUser authUser) {
-        if (LocalTime.now().isAfter(LocalTime.of(11, 0))) {
-            throw new AppException(HttpStatus.METHOD_NOT_ALLOWED, "You can not vote after 11:00");
-        }
+    @PostMapping("/restaurants/{restaurantId}/vote")
+    public Map<String, String> voteForRestaurant(@PathVariable int restaurantId, @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.getUser().getId();
+        restaurantRepository.checkPresent(restaurantId);
         Optional<Vote> vote = voteRepository.findByVotingDateAndUser_Id(LocalDate.now(), userId);
+        LocalTime votingTime = DateTimeUtil.getCurrentTime();
         if (vote.isPresent()) {
-            voteRepository.update(vote.get().getId(), restaurantId);
+            int i = voteRepository.update(vote.get().getId(), restaurantId, votingTime);
+            return SUCCESS_UPDATED;
         } else {
-            voteRepository.save(LocalDate.now(), restaurantId, userId);
+            voteRepository.save(userId, restaurantId, votingTime);
+            return SUCCESS_SAVED;
         }
     }
 

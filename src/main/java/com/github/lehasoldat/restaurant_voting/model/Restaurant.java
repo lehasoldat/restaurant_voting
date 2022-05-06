@@ -20,4 +20,10 @@ public class Restaurant extends BaseEntity {
     @JsonIgnore
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Menu> menus;
+
+    public Restaurant(Integer id, String name, Set<Menu> menus) {
+        super(id);
+        this.name = name;
+        this.menus = menus;
+    }
 }

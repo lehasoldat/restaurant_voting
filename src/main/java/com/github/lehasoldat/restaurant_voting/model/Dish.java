@@ -1,12 +1,15 @@
 package com.github.lehasoldat.restaurant_voting.model;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Embeddable
-@Data
+@Getter
+@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Dish {
-    String name;
-    long price;
+    private String name;
+    private Long price;
 }
