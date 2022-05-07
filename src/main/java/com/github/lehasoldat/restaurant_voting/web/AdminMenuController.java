@@ -6,6 +6,7 @@ import com.github.lehasoldat.restaurant_voting.repository.MenuRepository;
 import com.github.lehasoldat.restaurant_voting.repository.RestaurantRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -47,6 +48,7 @@ public class AdminMenuController {
 
     @DeleteMapping("/{menuId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @CacheEvict(value = "restaurantsWithMenuToday", allEntries = true)
     public void delete(@PathVariable int restaurantId, @PathVariable int menuId) {
         log.info("delete with restaurantId = {}, menuId = {}", restaurantId, menuId);
         menuRepository.checkBelong(menuId, restaurantId);
@@ -55,6 +57,7 @@ public class AdminMenuController {
 
     @PutMapping(value = "/{menuId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @CacheEvict(value = "restaurantsWithMenuToday", allEntries = true)
     public void update(@PathVariable int restaurantId, @PathVariable int menuId, @RequestBody @Valid Menu menu) {
         log.info("update with restaurantId = {}, menuId = {}", restaurantId, menuId);
         assureIdConsistent(menu, menuId);
@@ -64,6 +67,7 @@ public class AdminMenuController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @CacheEvict(value = "restaurantsWithMenuToday", allEntries = true)
     public ResponseEntity<Menu> createWithLocation(@PathVariable int restaurantId, @RequestBody @Valid Menu menu) {
         log.info("create with restaurantId = {}", restaurantId);
         checkNew(menu);

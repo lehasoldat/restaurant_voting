@@ -9,6 +9,7 @@ import com.github.lehasoldat.restaurant_voting.repository.VoteRepository;
 import com.github.lehasoldat.restaurant_voting.util.DateTimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -37,6 +38,7 @@ public class UserVotingController {
     private RestaurantRepository restaurantRepository;
 
     @GetMapping("/restaurants")
+    @Cacheable(value = "restaurantsWithMenuToday", keyGenerator = "currentDateKeyGenerator")
     public List<Restaurant> getRestaurantsWithMenuToday() {
         log.info("getRestaurantsWithMenuToday");
         List<Menu> menus = menuRepository.findAllByMenuDate(LocalDate.now());
