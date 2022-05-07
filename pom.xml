@@ -15,6 +15,7 @@
     <description>Graduation project (Topjava course)</description>
     <properties>
         <java.version>17</java.version>
+        <springdoc.version>1.6.8</springdoc.version>
     </properties>
     <dependencies>
         <!--        DB-->
@@ -72,6 +73,17 @@
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
+        </dependency>
+        <!--Swagger-->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>${springdoc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-security</artifactId>
+            <version>${springdoc.version}</version>
         </dependency>
         <!--        Others-->
         <dependency>

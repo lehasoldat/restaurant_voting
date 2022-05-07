@@ -4,6 +4,8 @@ import com.github.lehasoldat.restaurant_voting.model.Menu;
 import com.github.lehasoldat.restaurant_voting.model.Restaurant;
 import com.github.lehasoldat.restaurant_voting.repository.MenuRepository;
 import com.github.lehasoldat.restaurant_voting.repository.RestaurantRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -23,6 +25,7 @@ import static com.github.lehasoldat.restaurant_voting.util.ValidationUtil.checkN
 @RestController
 @RequestMapping(value = AdminMenuController.API_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
+@Tag(name = "Admin menu controller")
 public class AdminMenuController {
 
     public static final String API_URL = "/api/admin/restaurants/{restaurantId}/menus";
@@ -33,6 +36,7 @@ public class AdminMenuController {
     @Autowired
     RestaurantRepository restaurantRepository;
 
+    @Operation(summary = "Get all menus for the restaurant")
     @GetMapping()
     List<Menu> getAll(@PathVariable int restaurantId) {
         log.info("getAll with restaurantId = {}", restaurantId);
@@ -40,12 +44,14 @@ public class AdminMenuController {
         return menuRepository.findAllByRestaurant_Id(restaurantId);
     }
 
+    @Operation(summary = "Get all menus for the restaurant by date (use date in ISO format 'YYYY-MM-DD')")
     @GetMapping("/by-date")
     ResponseEntity<Menu> findMenuByDate(@PathVariable int restaurantId, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate menuDate) {
         log.info("findMenuByDate with restaurantId = {}, menuDate = {}", restaurantId, menuDate);
         return ResponseEntity.of(menuRepository.findByRestaurant_IdAndMenuDate(restaurantId, menuDate));
     }
 
+    @Operation(summary = "Delete menu")
     @DeleteMapping("/{menuId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @CacheEvict(value = "restaurantsWithMenuToday", allEntries = true)
@@ -55,6 +61,7 @@ public class AdminMenuController {
         menuRepository.deleteById(menuId);
     }
 
+    @Operation(summary = "Update menu")
     @PutMapping(value = "/{menuId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @CacheEvict(value = "restaurantsWithMenuToday", allEntries = true)
@@ -66,6 +73,7 @@ public class AdminMenuController {
         menuRepository.save(menu);
     }
 
+    @Operation(summary = "Create menu")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @CacheEvict(value = "restaurantsWithMenuToday", allEntries = true)
     public ResponseEntity<Menu> createWithLocation(@PathVariable int restaurantId, @RequestBody @Valid Menu menu) {

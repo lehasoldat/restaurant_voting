@@ -7,6 +7,8 @@ import com.github.lehasoldat.restaurant_voting.repository.MenuRepository;
 import com.github.lehasoldat.restaurant_voting.repository.RestaurantRepository;
 import com.github.lehasoldat.restaurant_voting.repository.VoteRepository;
 import com.github.lehasoldat.restaurant_voting.util.DateTimeUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping(value = UserVotingController.API_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
+@Tag(name = "User voting controller")
 public class UserVotingController {
 
     public static final String API_URL = "/api";
@@ -34,9 +37,7 @@ public class UserVotingController {
     @Autowired
     private MenuRepository menuRepository;
 
-    @Autowired
-    private RestaurantRepository restaurantRepository;
-
+    @Operation(summary = "Get all restaurants with menu today")
     @GetMapping("/restaurants")
     @Cacheable(value = "restaurantsWithMenuToday", keyGenerator = "currentDateKeyGenerator")
     public List<Restaurant> getRestaurantsWithMenuToday() {
@@ -45,12 +46,14 @@ public class UserVotingController {
         return menus.stream().map(Menu::getRestaurant).toList();
     }
 
+    @Operation(summary = "Get today's menu for the restaurant")
     @GetMapping("/restaurants/{restaurantId}/menus")
     public ResponseEntity<Menu> getRestaurantMenuToday(@PathVariable int restaurantId) {
         log.info("getRestaurantMenuToday with restaurantId = {}", restaurantId);
         return ResponseEntity.of(menuRepository.findByRestaurant_IdAndMenuDate(restaurantId, LocalDate.now()));
     }
 
+    @Operation(summary = "Vote for the restaurant. User can save or update his vote only before 11:00")
     @PostMapping("/restaurants/{restaurantId}/vote")
     public Map<String, String> voteForRestaurant(@PathVariable int restaurantId, @AuthenticationPrincipal AuthUser authUser) {
         log.info("voteForRestaurant with restaurantId = {}", restaurantId);
@@ -67,6 +70,7 @@ public class UserVotingController {
         }
     }
 
+    @Operation(summary = "Get all votes today")
     @GetMapping("/votes")
     public Map<Restaurant, Integer> getAllVotesToday() {
         log.info("getAllVotesToday");
