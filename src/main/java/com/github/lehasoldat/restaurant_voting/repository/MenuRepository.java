@@ -4,11 +4,13 @@ import com.github.lehasoldat.restaurant_voting.error.AppException;
 import com.github.lehasoldat.restaurant_voting.model.Menu;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+@Transactional(readOnly = true)
 public interface MenuRepository extends JpaRepository<Menu, Integer> {
     List<Menu> findAllByMenuDate(LocalDate menuDate);
 

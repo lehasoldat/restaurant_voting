@@ -11,6 +11,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
+@Transactional(readOnly = true)
 public interface VoteRepository extends JpaRepository<Vote, Integer> {
 
     @Modifying
