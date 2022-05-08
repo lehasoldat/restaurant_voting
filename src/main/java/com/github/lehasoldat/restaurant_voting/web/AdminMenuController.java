@@ -13,6 +13,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
@@ -65,12 +66,13 @@ public class AdminMenuController {
     @PutMapping(value = "/{menuId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @CacheEvict(value = "restaurantsWithMenuToday", allEntries = true)
+    @Transactional
     public void update(@PathVariable int restaurantId, @PathVariable int menuId, @RequestBody @Valid Menu menu) {
         log.info("update with restaurantId = {}, menuId = {}", restaurantId, menuId);
         assureIdConsistent(menu, menuId);
-        Restaurant restaurant = menuRepository.checkBelong(menuId, restaurantId).getRestaurant();
-        menu.setRestaurant(restaurant);
-        menuRepository.save(menu);
+        Menu oldValue = menuRepository.checkBelong(menuId, restaurantId);
+        oldValue.setMenuDate(menu.getMenuDate());
+        oldValue.setDishes(menu.getDishes());
     }
 
     @Operation(summary = "Create menu")
