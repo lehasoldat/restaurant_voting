@@ -26,7 +26,7 @@ class UserVotingControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(USER_MAIL)
     void getRestaurantsWithMenuToday() throws Exception {
-        String expected = mapper.writeValueAsString(Set.of(REST_1));
+        String expected = mapper.writeValueAsString(Set.of(REST_1, REST_2));
         perform(MockMvcRequestBuilders.get(API_URL + "restaurants"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
@@ -94,8 +94,15 @@ class UserVotingControllerTest extends AbstractControllerTest {
 
     @Test
     @WithUserDetails(ADMIN_MAIL)
-    void updateOrSaveNewVoteForRestaurantWithWrongRestaurantId() throws Exception {
+    void saveNewVoteForRestaurantWithWrongRestaurantId() throws Exception {
         perform(MockMvcRequestBuilders.post(API_URL + "/restaurants/{restaurantId}/vote", NOT_FOUND_ID))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    @WithUserDetails(ADMIN_MAIL)
+    void saveNewVoteForRestaurantWithRestaurantWithOutMenuToday() throws Exception {
+        perform(MockMvcRequestBuilders.post(API_URL + "/restaurants/{restaurantId}/vote", REST3_ID))
                 .andExpect(status().isUnprocessableEntity());
     }
 

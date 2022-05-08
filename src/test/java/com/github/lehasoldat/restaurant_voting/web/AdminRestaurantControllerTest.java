@@ -23,7 +23,7 @@ class AdminRestaurantControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(TestData.ADMIN_MAIL)
     void getAll() throws Exception {
-        String expected = mapper.writeValueAsString(Set.of(REST_1, REST_2));
+        String expected = mapper.writeValueAsString(Set.of(REST_1, REST_2, REST_3));
         perform(MockMvcRequestBuilders.get(API_URL))
                 .andExpect(status().isOk())
                 .andExpect(content().json(expected));
@@ -82,7 +82,7 @@ class AdminRestaurantControllerTest extends AbstractControllerTest {
                 .content(mapper.writeValueAsString(rest1Updated)))
                 .andExpect(status().isNoContent());
         Restaurant actual = restaurantRepository.getById(REST1_ID);
-        TestData.assertMatch(actual, rest1Updated);
+        TestData.assertRestaurantMatch(actual, rest1Updated);
     }
 
     @Test
@@ -109,38 +109,38 @@ class AdminRestaurantControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(ADMIN_MAIL)
     void create() throws Exception {
-        Restaurant rest3New = getNew();
+        Restaurant rest4New = getNew();
         ResultActions actions = perform(MockMvcRequestBuilders.post(API_URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(rest3New)))
+                .content(mapper.writeValueAsString(rest4New)))
                 .andExpect(status().isCreated());
         Restaurant actual = mapper.readValue(actions.andReturn().getResponse().getContentAsString(), Restaurant.class);
         int newId = actual.getId();
-        rest3New.setId(newId);
-        TestData.assertMatch(actual, rest3New);
+        rest4New.setId(newId);
+        TestData.assertMatch(actual, rest4New);
         actual = restaurantRepository.getById(newId);
-        TestData.assertMatch(actual, rest3New);
+        TestData.assertMatch(actual, rest4New);
     }
 
     @Test
     @WithUserDetails(ADMIN_MAIL)
     void createNotNew() throws Exception {
-        Restaurant rest3New = getNew();
-        rest3New.setId(2);
+        Restaurant rest4New = getNew();
+        rest4New.setId(2);
         perform(MockMvcRequestBuilders.post(API_URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(rest3New)))
+                .content(mapper.writeValueAsString(rest4New)))
                 .andExpect(status().isUnprocessableEntity());
     }
 
     @Test
     @WithUserDetails(ADMIN_MAIL)
     void createWithInvalidName() throws Exception {
-        Restaurant rest3New = getNew();
-        rest3New.setName("");
+        Restaurant rest4New = getNew();
+        rest4New.setName("");
         perform(MockMvcRequestBuilders.post(API_URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(rest3New)))
+                .content(mapper.writeValueAsString(rest4New)))
                 .andExpect(status().isUnprocessableEntity());
     }
 }

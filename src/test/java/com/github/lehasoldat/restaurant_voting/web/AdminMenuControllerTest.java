@@ -61,6 +61,13 @@ class AdminMenuControllerTest extends AbstractControllerTest {
 
     @Test
     @WithUserDetails(ADMIN_MAIL)
+    void findMenuByInvalidDate() throws Exception {
+        perform(MockMvcRequestBuilders.get(API_URL + "by-date?menuDate={menuDate}", REST1_ID, "invalid date"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithUserDetails(ADMIN_MAIL)
     void delete() throws Exception {
         perform(MockMvcRequestBuilders.delete(API_URL + "{menuId}", REST1_ID, MENU_REST_1_TODAY_ID))
                 .andExpect(status().isNoContent());
@@ -128,49 +135,37 @@ class AdminMenuControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(ADMIN_MAIL)
     void create() throws Exception {
-        Menu menuRest2TodayNew = getMenuRest2TodayNew();
-        ResultActions actions = perform(MockMvcRequestBuilders.post(API_URL, REST2_ID)
+        Menu menuRest3TodayNew = getMenuRest3TodayNew();
+        ResultActions actions = perform(MockMvcRequestBuilders.post(API_URL, REST3_ID)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(menuRest2TodayNew)))
+                .content(mapper.writeValueAsString(menuRest3TodayNew)))
                 .andExpect(status().isCreated());
         Menu actual = mapper.readValue(actions.andReturn().getResponse().getContentAsString(), Menu.class);
         int newId = actual.getId();
-        menuRest2TodayNew.setId(newId);
-        TestData.assertMenuMatch(actual, menuRest2TodayNew);
+        menuRest3TodayNew.setId(newId);
+        TestData.assertMenuMatch(actual, menuRest3TodayNew);
         actual = menuRepository.getById(newId);
-        TestData.assertMenuMatch(actual, menuRest2TodayNew);
+        TestData.assertMenuMatch(actual, menuRest3TodayNew);
     }
 
     @Test
     @WithUserDetails(ADMIN_MAIL)
     void createWithWrongRestaurantId() throws Exception {
-        Menu menuRest2TodayNew = getMenuRest2TodayNew();
+        Menu menuRest3TodayNew = getMenuRest3TodayNew();
         perform(MockMvcRequestBuilders.post(API_URL, NOT_FOUND_ID)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(menuRest2TodayNew)))
+                .content(mapper.writeValueAsString(menuRest3TodayNew)))
                 .andExpect(status().isUnprocessableEntity());
     }
 
     @Test
     @WithUserDetails(ADMIN_MAIL)
     void createWithInvalidDish() throws Exception {
-        Menu menuRest2TodayNew = getMenuRest2TodayNew();
-        menuRest2TodayNew.setDishes(Set.of(DISH_NEW, DISH_INVALID));
-        perform(MockMvcRequestBuilders.post(API_URL, REST2_ID)
+        Menu menuRest3TodayNew = getMenuRest3TodayNew();
+        menuRest3TodayNew.setDishes(Set.of(DISH_NEW, DISH_INVALID));
+        perform(MockMvcRequestBuilders.post(API_URL, REST3_ID)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(menuRest2TodayNew)))
+                .content(mapper.writeValueAsString(menuRest3TodayNew)))
                 .andExpect(status().isUnprocessableEntity());
     }
-
-    @Test
-    @WithUserDetails(ADMIN_MAIL)
-    void createWithInvalidDate() throws Exception {
-        Menu menuRest2TodayNew = getMenuRest2TodayNew();
-        menuRest2TodayNew.setDishes(Set.of(DISH_NEW, DISH_INVALID));
-        perform(MockMvcRequestBuilders.post(API_URL, REST2_ID)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(menuRest2TodayNew)))
-                .andExpect(status().isUnprocessableEntity());
-    }
-
 }
