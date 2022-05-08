@@ -23,7 +23,14 @@ public interface MenuRepository extends JpaRepository<Menu, Integer> {
     default Menu checkBelong(int menuId, int restaurantId) {
         return findByIdAndRestaurant_Id(menuId, restaurantId).orElseThrow(() -> {
             throw new AppException(HttpStatus.UNPROCESSABLE_ENTITY, "Menu with id = "
-                    + menuId + " does not belong to restaurant with id = " + restaurantId);
+                    + menuId + " does not belong to the restaurant with id = " + restaurantId);
+        });
+    }
+
+    default void checkPresentForGivenRestaurantToday(int restaurantId) {
+        findByRestaurant_IdAndMenuDate(restaurantId, LocalDate.now()).orElseThrow(() -> {
+            throw new AppException(HttpStatus.UNPROCESSABLE_ENTITY, "There is now menu today " +
+                    "for the restaurant with id = " + restaurantId);
         });
     }
 

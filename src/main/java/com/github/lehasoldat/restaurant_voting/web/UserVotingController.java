@@ -4,7 +4,6 @@ import com.github.lehasoldat.restaurant_voting.model.Menu;
 import com.github.lehasoldat.restaurant_voting.model.Restaurant;
 import com.github.lehasoldat.restaurant_voting.model.Vote;
 import com.github.lehasoldat.restaurant_voting.repository.MenuRepository;
-import com.github.lehasoldat.restaurant_voting.repository.RestaurantRepository;
 import com.github.lehasoldat.restaurant_voting.repository.VoteRepository;
 import com.github.lehasoldat.restaurant_voting.util.DateTimeUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -58,7 +57,7 @@ public class UserVotingController {
     public Map<String, String> voteForRestaurant(@PathVariable int restaurantId, @AuthenticationPrincipal AuthUser authUser) {
         log.info("voteForRestaurant with restaurantId = {}", restaurantId);
         int userId = authUser.getUser().getId();
-        restaurantRepository.checkPresent(restaurantId);
+        menuRepository.checkPresentForGivenRestaurantToday(restaurantId);
         Optional<Vote> vote = voteRepository.findByVotingDateAndUser_Id(LocalDate.now(), userId);
         LocalTime votingTime = DateTimeUtil.getCurrentTime();
         if (vote.isPresent()) {
