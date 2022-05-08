@@ -1,4 +1,4 @@
-###[Restaurant voting app](http://github.com/lehasoldat/restaurant_voting)
+### [Restaurant voting app](http://github.com/lehasoldat/restaurant_voting)
 *(graduation project at [course BootJava](https://javaops.ru/view/bootjava))*
 
 The task is:
