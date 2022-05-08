@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Configuration;
                 version = "1.0",
                 description = """
                         <a href='http://github.com/lehasoldat/restaurant_voting'>Restaurant voting app</a> 
-                        (graduation project at <a href='https://javaops.ru/view/bootjava'>course BootJava</a>)
+                        (graduation project at <a href='https://javaops.ru/view/topjava'>course TopJava</a>)
                         <p><b>Test credentials:</b><br>
                         - user@mail.ru / user<br>
                         - admin@mail.ru / admin</p>

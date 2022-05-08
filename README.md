@@ -1,5 +1,5 @@
 ### [Restaurant voting app](http://github.com/lehasoldat/restaurant_voting)
-*(graduation project at [course BootJava](https://javaops.ru/view/bootjava))*
+*(graduation project at [course TopJava](https://javaops.ru/view/topjava))*
 
 The task is:
 
