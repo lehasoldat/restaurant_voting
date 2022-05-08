@@ -13,7 +13,6 @@ import java.util.Set;
 @Entity(name = "restaurants")
 @Getter
 @Setter
-@ToString(exclude = {"menus"})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Restaurant extends BaseEntity {
 
@@ -31,5 +30,10 @@ public class Restaurant extends BaseEntity {
         super(id);
         this.name = name;
         this.menus = menus;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

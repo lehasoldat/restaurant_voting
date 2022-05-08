@@ -23,5 +23,5 @@ public class Dish {
     @Column(name = "price", nullable = false)
     @Range(min = 0, max = 10000)
     @NotNull
-    private Long price;
+    private Integer price;
 }
